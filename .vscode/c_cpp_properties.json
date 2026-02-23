@@ -1,0 +1,36 @@
+{
+    "configurations": [
+        {
+            "name": "PlatformIO",
+            "includePath": [
+                "${workspaceFolder}/Code/include",
+                "${workspaceFolder}/Code/src",
+                "${workspaceFolder}/Code/lib/**",
+                "${workspaceFolder}/Code/.pio/libdeps/**",
+                "${workspaceFolder}/Code/.pio/build/**",
+                "${userProfile}/.platformio/packages/framework-arduinorenesas-uno/cores/arduino",
+                "${userProfile}/.platformio/packages/framework-arduinorenesas-uno/variants/UNOWIFIR4",
+                "${userProfile}/.platformio/packages/framework-arduinorenesas-uno/libraries/**",
+                "${userProfile}/.platformio/packages/toolchain-gccarmnoneeabi/arm-none-eabi/include"
+            ],
+            "defines": [
+                "PLATFORMIO=60106",
+                "ARDUINO_UNOR4_WIFI",
+                "ARDUINO=10607",
+                "ARDUINO_ARCH_RENESAS_UNO",
+                "ARDUINO_FSP",
+                "F_CPU=48000000L"
+            ],
+            "compilerPath": "${userProfile}/.platformio/packages/toolchain-gccarmnoneeabi/bin/arm-none-eabi-gcc.exe",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-arm",
+            "compilerArgs": [
+                "-mcpu=cortex-m4",
+                "-mfloat-abi=hard",
+                "-mfpu=fpv4-sp-d16"
+            ]
+        }
+    ],
+    "version": 4
+}
