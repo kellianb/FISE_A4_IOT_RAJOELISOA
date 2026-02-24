@@ -1,11 +1,4 @@
-#set heading(numbering: "1.")
-#set par(leading: 1.2em)
-
-#show link: set text(fill: blue, weight: 700)
-#show link: underline
-
-#show title: set text(size: 20pt)
-#show title: set align(center)
+#import "style.typ"
 
 #title[
   IoT Project - Deliverable 2
