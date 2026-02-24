@@ -18,6 +18,8 @@
   show title: set text(size: 20pt)
   show title: set align(center)
 
+  // Table style
+  show figure.where(kind: table): set block(breakable: true)
   show table: set par(leading: 0.8em, spacing: 1em)
   body
 }
