@@ -44,9 +44,9 @@ Due to budget constraints in the initial design phase, battery-powered devices a
 
 == Criteria & Weight <weight>
 
-In order to compare our long-range protocols we will use a set of criteria, chosen based on our needs and are weighted according to their relevancy to our project.
+In order to compare our long-range protocols we will use a set of criteria, chosen based on our needs and weighted according to their relevancy to our project.
 
-Those criterias are:
+Those criteria are:
 
 #figure(
   table(
@@ -71,7 +71,7 @@ Those criterias are:
     [*Throughput*],
     [Throughput in IoT refers to the amount of data successfully transmitted and received by IoT devices over a network within a specific time period. It is crucial for evaluating the performance and efficiency of IoT systems, especially as the number of connected devices increases.], $ 0.05 $
   ),
-  caption: [Criterias and their weight.]
+  caption: [Criteria and their weights]
 )
 
 === Justification
