@@ -56,7 +56,7 @@ Those criteria are:
     table.header(
       [*Criteria*], [*Description*], [*Weight*],
     ),
-    [*Power Consuption*],
+    [*Power Consumption*],
     [Power consumption in IoT refers to the amount of electrical energy used by Internet of Things devices during their operation.], $ 0.25 $,
     [*Cost*],
     [This one is self-explanatory. We need to amount every possible costs though such as operator prices if we need third-party provider.], $ 0.20 $,
@@ -90,13 +90,13 @@ In the contrary, we need to have a high weight for power consumption. There are 
 - Month to a year of autonomy
 - Low power transmission
 
-If we have a low power consuption, our project is feasible.
+If we have a low power consumption, our project is feasible.
 
 Furthermore, we have a high cost weight because of our project and context limitations (School).
 
 We must reliably cover the whole coworking space hence, range is pretty important.
 
-We would prefer if we are independant, if we rely on telecom operators this increases our cost and risk.
+We would prefer if we are independent, if we rely on telecom operators this increases our cost and risk.
 
 Then for the interoperability and the density, we need to support MQTT and future scalability and we have multiple sensors in one space so the scale need to be local.
 
@@ -124,7 +124,7 @@ Then for the interoperability and the density, we need to support MQTT and futur
 
 #figure(
   image("Images/technologiesLayer.png"),
-  caption:[Technologies Layer]
+  caption:[IoT technology layers]
 )
 
 == Multi-criteria matrix
@@ -183,7 +183,7 @@ And use this formula to compute a score for each technology : $ sum "value" time
     "Reliability", "Lower", "Higher",
     "Overhead", "Lower", "Higher",
   ),
-  caption: "Comparaison of CoAP and MQTT"
+  caption: "Comparison of CoAP and MQTT"
 )
 
 *CoAP* provides a simple and lightweight REST-like communication protocol, similar to regular HTTP. CoAP is well suited for simple device-to-device communication and interaction with internet-based systems. It also supports features such as multicast, allowing it to broadcast messages to multiple destinations simultaneously.
@@ -221,7 +221,7 @@ We decided to use MQTT because our Arduino gateway has sufficient computational 
     "Coverage", "Depends on operator deployment", "Full control within campus range ",
     "Control & Flexibility", "Limited configuration options", "Complete network control",
   ),
-  caption: "Comparaison of operator and private networks"
+  caption: "Comparison of operator and private networks"
 )
 
 == Operator Networks (Sigfox/NB-IoT)
@@ -296,9 +296,9 @@ So, in the table below, we identify which provision could apply to our project:
     "5.1 No universal default passwords", " ZigBee and MQTT technologies require passwords for authentication. They will use separate passwords created by a secure password generator.",
     "5.2 Implement a means to manage reports of vulnerabilities", "We will maintain an internal database of internal vulnerabilities, their severity and the status of their mitigation.",
     "5.3 Keep software updated", "We will install security updates within 24h using a serial cable (no OTA).",
-    "5.4 Securely store sensitive security parameters", "Our Arduinos do not have any secure means of storing secrets. We could add a secure element to them, such as the ATECC608A. We will use separate credentials for each device and rotate them regularly to limit exposure.",
+    "5.4 Securely store sensitive security parameters", "Our Arduino's do not have any secure means of storing secrets. We could add a secure element to them, such as the ATECC608A. We will use separate credentials for each device and rotate them regularly to limit exposure.",
     "5.5 Communicate securely", "As defined in our minimum-security requirements, we implement TLS (Arduino) encryption and AES-128 (ZigBee).",
-    "5.6 Minimize exposed attack surfaces", "We choose ZigBee over BLE to reduce the attack surface. Separate sub-networks will be used for segmentation. Our systems don’t have any physical protection, however we can disable physical port on the Arduinos.",
+    "5.6 Minimize exposed attack surfaces", "We choose ZigBee over BLE to reduce the attack surface. Separate sub-networks will be used for segmentation. Our systems don’t have any physical protection, however we can disable physical port on the Arduino's.",
     "5.7 Ensure software integrity", "We don’t have any way to ensure software integrity with the hardware at hand, beyond placing it in a secure container.",
     "5.8 Ensure that personal data is secure", "No personal data will be gathered or processed.",
     "5.9 Make systems resilient to outages", "We will have a buffer that stores the data locally if we face network issues (as Wi-Fi not reachable).",
