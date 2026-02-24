@@ -25,26 +25,26 @@
 
 == Initial Scope <scope>
 
-First, our current project have multiple requirements. This is our current scope.
+Our project has multiple requirements, which fall into these categories:
 
-*Latency/local criticality*: The system must provide occupancy updates with a maximum delay of 2 seconds to ensure near real-time information for students outside the coworking space. It must remain operational even in case of temporary network failure; therefore, data processing and decision-making are handled locally using an edge computing approach. 
+*Latency/local criticality*: The system must provide occupancy updates with a maximum delay of 2 seconds to ensure near real-time information for students outside the coworking space. It must remain operational even in case of temporary network failure; therefore, data processing and decision-making are handled locally using an edge computing approach.
 
-*Energy/autonomy*: Devices must operate autonomously for at least one month, with a target autonomy of a year. To reduce energy consumption, devices operate only during opening hours (8:00 AM - 6:00 PM), use low-power communication protocols, and transmit data only when occupancy status changes.
-Due to budget constraints in this initial design phase, battery-powered devices are selected to reduce installation costs and simplify deployment. 
+*Energy/autonomy*: Devices must operate autonomously for at least one month, with a target autonomy of a year. To reduce energy consumption, devices operate only during opening hours (8:00 AM - 6:00 PM), use low-power communication protocols, and transmit data only when occupancy status changes.
+Due to budget constraints in the initial design phase, battery-powered devices are selected to reduce installation costs and simplify deployment.
 
-*Network/coverage*: The system must cover the entire coworking space and remain accessible. 
+*Network/coverage*: The system must cover the entire coworking space and remain accessible.
 
-*Criteria*: Ensure electrical and operational safety in compliance with building regulations. 
+*Criteria*: Ensure electrical and operational safety in compliance with building regulations.
 
-*Interoperability*: The system supports open communication protocols such as MQTT or CoAP to ensure interoperability and future scalability. 
+*Interoperability*: The system supports open communication protocols such as MQTT or CoAP to ensure interoperability and future scalability.
 
-*Security (baseline)*: The system follows baseline IoT security principles inspired by ETSI EN 303 645. No personal data is stored. Occupancy measurement is anonymous and processed locally to ensure privacy protection. 
+*Security (baseline)*: The system follows baseline IoT security principles inspired by ETSI EN 303 645. No personal data is stored. Occupancy measurement is anonymous and processed locally to ensure privacy protection.
 
-*Assumptions (what we assume to be true at this stage)*: At this stage, we assume that students may attempt to tamper with the system, the campus Wi-Fi is stable, devices operate on battery power due to budget constraints, the project budget is limited, and the IT department approves network integration. 
+*Assumptions (what we assume to be true at this stage)*: At this stage, we assume that students may attempt to tamper with the system, the campus Wi-Fi is stable, devices operate on battery power due to budget constraints, the project budget is limited, and the IT department approves network integration.
 
-== Criterias & Weight <weight>
+== Criteria & Weight <weight>
 
-In order to compare our long-range protocols we will use multiple criterias. Those criterias are chosen based on our needs and will be weighted in order to choose the most relevant protocol overall for our situation.
+In order to compare our long-range protocols we will use a set of criteria, chosen based on our needs and are weighted according to their relevancy to our project.
 
 Those criterias are:
 
@@ -54,7 +54,7 @@ Those criterias are:
     inset: 10pt,
     align: horizon,
     table.header(
-      [*Criterias*], [*Description*], [*Weight*],
+      [*Criteria*], [*Description*], [*Weight*],
     ),
     [*Power Consuption*],
     [Power consumption in IoT refers to the amount of electrical energy used by Internet of Things devices during their operation.], $ 0.25 $,
@@ -111,7 +111,7 @@ Then for the interoperability and the density, we need to support MQTT and futur
       inset: 10pt,
       align: horizon,
       table.header(
-        [*Criteria*], [*BLE*], [*ZigBee*], [*Wi-Fi*], [*LoRaWAN*], [*NB-IoT*], [*Sigfox*]
+        [Criteria], [*BLE*], [*ZigBee*], [*Wi-Fi*], [*LoRaWAN*], [*NB-IoT*], [*Sigfox*]
       ),
       [*Power*], [Very low], [Very low], [High], [Very low], [Low to moderate], [Very low],
       [*Cost*], [Very low], [Low], [Medium], [Low], [Medium], [Medium],
@@ -128,7 +128,7 @@ Then for the interoperability and the density, we need to support MQTT and futur
 )
 
 == Multi-criteria matrix
-Now, thanks to all of these informations we can fill out the multi-criteria matrix.
+Now, thanks to this information we can fill out the multi-criteria matrix:
 
 #figure(
   caption:[Multi-criteria matrix],
@@ -138,7 +138,7 @@ Now, thanks to all of these informations we can fill out the multi-criteria matr
     inset: 10pt,
     align: horizon,
     table.header(
-      [*Criteria*], [*BLE*], [*ZigBee*], [*Wi-Fi*], [*LoRaWAN*], [*NB-IoT*], [*Sigfox*]
+      [Criteria], [*BLE*], [*ZigBee*], [*Wi-Fi*], [*LoRaWAN*], [*NB-IoT*], [*Sigfox*]
     ),
       [*Power*], [5], [5], [1], [5], [3], [5],
       [*Cost*], [5], [4], [5], [3], [2], [3],
@@ -148,14 +148,14 @@ Now, thanks to all of these informations we can fill out the multi-criteria matr
     )
 )
 
-Then we use this formula to get a score : $ sum "value" times "weight" $
+And use this formula to compute a score for each technology : $ sum "value" times "weight" $
 
 #figure(
-  caption: [Final Result and Ranking],
+  caption: [Final result and ranking],
   table(
     columns: 3,
     table.header(
-      [*Technology*], [*Final Score*], [*Rank*]
+      [Technology], [*Final Score*], [*Rank*]
     ),
 
     [ZigBee], [4.41], [1],
@@ -186,8 +186,7 @@ Then we use this formula to get a score : $ sum "value" times "weight" $
   caption: "Comparaison of CoAP and MQTT"
 )
 
-*CoAP* provides a simple and lightweight REST-like communication rotocol,
-similar to regular HTTP. CoAP is well suited for simple device-to-device communicationand interaction with internet-based systems. It also supports features such as multicast, allowing it to broadcast messages to multiple destinations simultaneously.
+*CoAP* provides a simple and lightweight REST-like communication protocol, similar to regular HTTP. CoAP is well suited for simple device-to-device communication and interaction with internet-based systems. It also supports features such as multicast, allowing it to broadcast messages to multiple destinations simultaneously.
 
 *MQTT* is a lightweight messaging protocol designed for devices with limited bandwidth, power, or processing capabilities. It operates on a publish–subscribe model, in which devices (called clients) send messages to a central broker rather than communicating directly with one another. Other devices or services (called subscribers) can subscribe to specific categories of incoming data, known as topics, and are notified whenever new messages are published.
 
@@ -277,7 +276,7 @@ We decided to use MQTT because our Arduino gateway has sufficient computational 
 
 This standard _“specifies high-level security and data protection provisions for consumer IoT devices that are connected to network infrastructure (such as the Internet or home network) and their interactions with associated services.”_
 
-As listed in the section _“1 – Scope”_ of the ETSI 303 645, we can figure out that our system is correlated with the definition below:
+As listed in the section _“1 – Scope”_ of the ETSI 303 645, we can figure out that our system is correlated with the definition below:
 
 #align(center)[- _“IoT gateways, base stations and hubs to which multiple devices connect;”._]
 
@@ -291,8 +290,8 @@ So, in the table below, we identify which provision could apply to our project:
   table(
     columns: (auto, auto),
     table.header(
-      [*Provision of ETSI EN 303 645 v3.1.3 (2024/09)*],
-      [*Actions implementation*]),
+      [*Provision of ETSI EN 303 645 v3.1.3 (2024/09)*],
+      [*Implementation measures*]),
     "5.0 Reporting implementation", "We will provide an email address to send in reports and print it onto our devices.",
     "5.1 No universal default passwords", " ZigBee and MQTT technologies require passwords for authentication. They will use separate passwords created by a secure password generator.",
     "5.2 Implement a means to manage reports of vulnerabilities", "We will maintain an internal database of internal vulnerabilities, their severity and the status of their mitigation.",
