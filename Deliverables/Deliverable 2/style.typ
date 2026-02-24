@@ -1,5 +1,8 @@
 // Deliverable styling
 #let deliverable(body) = {
+  // Page style
+  set page(numbering: "1", number-align: right)
+
   // Heading style
   set heading(numbering: "1.")
   show heading: set block(below: 1.5em, above: 1.5em)
