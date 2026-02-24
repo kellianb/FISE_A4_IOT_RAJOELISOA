@@ -72,13 +72,13 @@ Those criterias are:
     [Throughput in IoT refers to the amount of data successfully transmitted and received by IoT devices over a network within a specific time period. It is crucial for evaluating the performance and efficiency of IoT systems, especially as the number of connected devices increases.], $ 0.05 $
   ),
   caption: [Criterias and their weight.]
-) 
+)
 
 === Justification
 
 Throughput has a low weight because we need to:
 
-- Send data only on status change 
+- Send data only on status change
 - Transmits small payloads
 - Process data locally
 
@@ -132,7 +132,7 @@ Now, thanks to all of these informations we can fill out the multi-criteria matr
 
 #figure(
   caption:[Multi-criteria matrix],
-  
+
   table(
     columns: (100pt, auto, auto, auto, auto, auto, auto),
     inset: 10pt,
@@ -167,7 +167,45 @@ Then we use this formula to get a score : $ sum "value" times "weight" $
   )
 )
 
+= Communication architecture
+
+== MQTT vs COAP
+
+#figure(
+  table(
+    columns: (auto, auto, auto),
+    table.header([Aspect],
+      [*Constrained Application Protocol (CoAP)*],
+      [*Message Queuing Telemetry Transport (MQTT)*]),
+    "Model", "Publish-Subscribe", "Request-Response (REST-like)",
+    "Target", "API service", "MQTT broker (Mosquitto, RabbitMQ, ...)",
+    "Transport", "UDP", "TCP",
+    "Reliability", "Lower", "Higher",
+    "Overhead", "Lower", "Higher",
+  ),
+  caption: "Comparaison of CoAP and MQTT"
+)
+
+*CoAP* provides a simple and lightweight REST-like communication rotocol,
+similar to regular HTTP. CoAP is well suited for simple device-to-device communicationand interaction with internet-based systems. It also supports features such as multicast, allowing it to broadcast messages to multiple destinations simultaneously.
+
+*MQTT* is a lightweight messaging protocol designed for devices with limited bandwidth, power, or processing capabilities. It operates on a publish–subscribe model, in which devices (called clients) send messages to a central broker rather than communicating directly with one another. Other devices or services (called subscribers) can subscribe to specific categories of incoming data, known as topics, and are notified whenever new messages are published.
+
+This architecture makes MQTT especially efficient for Internet of Things (IoT) applications, as devices receive only the data that is relevant to them. In addition, devices need to send each message to only a single destination, the broker, which then handles distributing it to all subscribed parties and ensures reliable delivery.
+
+== Communication protocol choice
+
+We decided to use MQTT because our Arduino gateway has sufficient computational resources to handle the protocol and because we can benefit from the additional features it offers. MQTT provides additional flexibility, supporting scalable architectures and the easy addition of new services as our system grows. Moreover, its message delivery guarantees ensure reliable communication, which is essential for maintaining consistency and integrity across all connected devices and subscribers.
+
+== Diagram
+
+#figure(
+  image("Images/Architecture schematic.drawio.svg"),
+  caption: "Architecture overview"
+)
+
 = Operator vs Private communications
+
 *Context:* Campus coworking space with 3 door motion sensors (currently using Zigbee/Arduino)
 
 == Network comparison overview
@@ -274,40 +312,3 @@ So, in the table below, we identify which provision could apply to our project:
 )
 
 The different secure technical choices that we defined are mostly related to the ETSI cybersecurity guidelines. Thanks to this standard, we can determine and design an entire IoT project with complete cyber consideration.
-
-= Communication architecture
-
-== MQTT vs COAP
-
-#figure(
-  table(
-    columns: (auto, auto, auto),
-    table.header([Aspect],
-      [*Constrained Application Protocol (CoAP)*],
-      [*Message Queuing Telemetry Transport (MQTT)*]),
-    "Model", "Publish-Subscribe", "Request-Response (REST-like)",
-    "Target", "API service", "MQTT broker (Mosquitto, RabbitMQ, ...)",
-    "Transport", "UDP", "TCP",
-    "Reliability", "Lower", "Higher",
-    "Overhead", "Lower", "Higher",
-  ),
-  caption: "Comparaison of CoAP and MQTT"
-)
-
-*CoAP* provides a simple and lightweight REST-like communication rotocol,
-similar to regular HTTP. CoAP is well suited for simple device-to-device communicationand interaction with internet-based systems. It also supports features such as multicast, allowing it to broadcast messages to multiple destinations simultaneously.
-
-*MQTT* is a lightweight messaging protocol designed for devices with limited bandwidth, power, or processing capabilities. It operates on a publish–subscribe model, in which devices (called clients) send messages to a central broker rather than communicating directly with one another. Other devices or services (called subscribers) can subscribe to specific categories of incoming data, known as topics, and are notified whenever new messages are published.
-
-This architecture makes MQTT especially efficient for Internet of Things (IoT) applications, as devices receive only the data that is relevant to them. In addition, devices need to send each message to only a single destination, the broker, which then handles distributing it to all subscribed parties and ensures reliable delivery.
-
-== Communication protocol choice
-
-We decided to use MQTT because our Arduino gateway has sufficient computational resources to handle the protocol and because we can benefit from the additional features it offers. MQTT provides additional flexibility, supporting scalable architectures and the easy addition of new services as our system grows. Moreover, its message delivery guarantees ensure reliable communication, which is essential for maintaining consistency and integrity across all connected devices and subscribers.
-
-== Diagram
-
-#figure(
-  image("Images/Architecture schematic.drawio.svg"),
-  caption: "Architecture overview"
-)
