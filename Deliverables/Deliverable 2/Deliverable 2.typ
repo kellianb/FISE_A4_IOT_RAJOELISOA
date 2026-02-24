@@ -1,4 +1,6 @@
-#import "style.typ"
+#import "style.typ" : deliverable
+
+#show: deliverable
 
 #title[
   IoT Project - Deliverable 2
