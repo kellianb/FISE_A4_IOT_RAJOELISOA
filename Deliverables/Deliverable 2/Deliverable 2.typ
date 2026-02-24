@@ -284,7 +284,7 @@ By the way, we can apply the security baseline of this standard to our IoT syste
 
 In the section _“5 - Cyber security provisions for consumer IoT”_, which is composed of 14 provisions, several security requirements can be found and linked to our IoT system.
 
-So, in the table below, we identify which provision could apply to our project:
+So, in the table below, we identify which provisions could apply to our project:
 
 #figure(
   table(
