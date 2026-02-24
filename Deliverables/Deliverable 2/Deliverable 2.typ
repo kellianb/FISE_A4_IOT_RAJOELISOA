@@ -102,10 +102,10 @@
 == Migration Path from Current Zigbee Setup:
 
 Your current Arduino + Zigbee architecture could transition to LoRaWAN with:
-Replace Zigbee modules with LoRa transceivers (e.g., RFM95W, SX1276)
-Deploy LoRaWAN gateway (e.g., RAK7248, Dragino LPS8)
-Setup network server (ChirpStack open-source or The Things Network)
-Maintain Arduino sensor logic with minimal changes
+- Replace Zigbee modules with LoRa transceivers (e.g., RFM95W, SX1276)
+- Deploy LoRaWAN gateway (e.g., RAK7248, Dragino LPS8)
+- Setup network server (ChirpStack open-source or The Things Network)
+- Maintain Arduino sensor logic with minimal changes
 
 == Conclusion
 
