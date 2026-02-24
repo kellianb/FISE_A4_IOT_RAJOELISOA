@@ -120,6 +120,46 @@ For a campus educational project with 3 doors, LoRaWAN private deployment offers
 
 = Minimum safety trace
 
+*ETSI 303 645 Overview*
+
+This standard _“specifies high-level security and data protection provisions for consumer IoT devices that are connected to network infrastructure (such as the Internet or home network) and their interactions with associated services.”_
+
+As listed in the section _“1 – Scope”_ of the ETSI 303 645, we can figure out that our system is correlated with the definition below:
+
+#align(center)[- _“IoT gateways, base stations and hubs to which multiple devices connect;”._]
+
+By the way, we can apply the security baseline of this standard to our IoT systems.
+
+In the section _“5 - Cyber security provisions for consumer IoT”_, which is composed of 14 provisions, several security requirements can be found and linked to our IoT system.
+
+So, in the table below, we identify which provision could apply to our project:
+
+#figure(
+  table(
+    columns: (auto, auto),
+    table.header(
+      [*Provision of ETSI EN 303 645 v3.1.3 (2024/09)*],
+      [*Actions implementation*]),
+    "5.0 Reporting implementation", "No CVD needed, this is the responsibility of the IT infrastructure",
+    "5.1 No universal default passwords", "Our systems will use password defining in our password policy. ZigBee and MQTT technologies required passwords for authentication.",
+    "5.2 Implement a means to manage reports of vulnerabilities", "All events are reported through our Grafana dashboard which we can implement alert messaging.",
+    "5.3 Keep software updated", "Our Arduinos won’t be updated for new features; we will upload potentially update linked to system vulnerability through a serial cable (no OTA).",
+    "5.4 Securely store sensitive security parameters", "For our ZigBee and our Arduino, we don’t have any secure chip. We could add a secure element for our Arduino (the one who send MQTT messages) as the ATECC608A.",
+    "5.5 Communicate securely", "As defined in our minimum-security requirements, we implement TLS (Arduino) encryption and AES-128 (ZigBee).",
+    "5.6 Minimize exposed attack surfaces", "We choose ZigBee over BLE to also reduce the attack surfaces. Specific sub-networks will be used. Our systems don’t have any physical protection and we can disable physical port (Arduino).",
+    "5.7 Ensure software integrity", "We don’t have any secure boot.",
+    "5.8 Ensure that personal data is secure", "No personal data will be processed.",
+    "5.9 Make systems resilient to outages", "We still have a buffer that stores the data locally if we face network issues (as Wi-Fi not reachable).",
+    "5.10 Examine system telemetry data", "We can gather additional information as: device health data (sensor state), network data (timeouts) and security data (fail check authentication).",
+    "5.11 Make it easy for users to delete user data", "We have a data retention policy of 30 days for our data stored in our database.",
+    "5.12 Make installation and maintenance of devices easy", "No plan defined for deployment phase; we won’t go deeper than prototype phase.",
+    "5.13 Validate input data", "Each data sent will be checked with pre-defined criterion as data rate, data value, etc.",
+  ),
+  caption: "ETSI Cybersecurity provision within our project"
+)
+
+The different secure technical choices that we defined are mostly related to the ETSI cybersecurity guidelines. Thanks to this standard, we can determine and design an entire IoT project with complete cyber consideration.
+
 = Communication architecture
 
 == MQTT vs COAP
