@@ -15,5 +15,6 @@
   show title: set text(size: 20pt)
   show title: set align(center)
 
+  show table: set par(leading: 0.8em, spacing: 1em)
   body
 }
