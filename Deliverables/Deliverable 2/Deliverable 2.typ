@@ -177,7 +177,7 @@ And use this formula to compute a score for each technology : $ sum "value" time
     table.header([Aspect],
       [*Constrained Application Protocol (CoAP)*],
       [*Message Queuing Telemetry Transport (MQTT)*]),
-    "Model", "Publish-Subscribe", "Request-Response (REST-like)",
+    "Model", "Request-Response (REST-like)", "Publish-Subscribe",
     "Target", "API service", "MQTT broker (Mosquitto, RabbitMQ, ...)",
     "Transport", "UDP", "TCP",
     "Reliability", "Lower", "Higher",
