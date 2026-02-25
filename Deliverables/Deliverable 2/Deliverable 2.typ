@@ -267,7 +267,6 @@ We decided to use MQTT because our Arduino gateway has sufficient computational 
 
 - Single LoRaWAN gateway likely covers entire coworking space and surrounding buildings
 - Can leverage existing campus network infrastructure for backhaul
-- Aligns with educational objectives (learning network protocols)
 - Easier IT approval (internal network only)
 
 = Minimum safety trace
