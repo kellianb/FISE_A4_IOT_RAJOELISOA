@@ -150,20 +150,53 @@ Now, thanks to this information we can fill out the multi-criteria matrix:
 
 And use this formula to compute a score for each technology : $ sum "value" times "weight" $
 
-#figure(
-  caption: [Final result and ranking],
-  table(
-    columns: 3,
-    table.header(
-      [Technology], [*Final Score*], [*Rank*]
-    ),
+#let weights = (
+  power: 25,
+  cost: 20,
+  range: 15,
+  operator: 15,
+  interop: 10,
+)
 
-    [ZigBee], [4.41], [1],
-    [BLE], [4.29], [2],
-    [LoRaWAN], [3.94], [3],
-    [Wi-Fi], [3.41], [4],
-    [Sigfox], [3.29], [5],
-    [NB-IoT], [2.71], [6],
+#let total-weight = weights.power + weights.cost + weights.range + weights.operator + weights.interop
+
+#let techs = (
+  BLE: (power: 5, cost: 5, range: 2, operator: 5, interop: 4),
+  ZigBee: (power: 5, cost: 4, range: 4, operator: 5, interop: 4),
+  WiFi: (power: 1, cost: 5, range: 3, operator: 5, interop: 3),
+  LoRaWAN: (power: 5, cost: 3, range: 5, operator: 4, interop: 4),
+  NBIoT: (power: 3, cost: 2, range: 5, operator: 1, interop: 4),
+  Sigfox: (power: 5, cost: 3, range: 5, operator: 1, interop: 2),
+)
+
+#let score(t) = (
+  t.power * weights.power
+  + t.cost * weights.cost
+  + t.range * weights.range
+  + t.operator * weights.operator
+  + t.interop * weights.interop
+) / total-weight
+
+#let results = techs.pairs().map(p => (p.at(0), score(p.at(1)))).sorted(key: it => -it.at(1))
+
+#figure(
+  caption: [Final Result and Ranking],
+  table(
+    columns: (auto, auto, auto),
+    inset: 10pt,
+    table.header([*Technology*], [*Final Score*], [*Rank*]),
+
+    ..results.enumerate()
+      .map(e => {
+        let i = e.at(0)
+        let row = e.at(1)
+        (
+          [#row.at(0)],
+          [#calc.round(row.at(1), digits: 2)],
+          [#(i + 1)],
+        )
+      })
+      .flatten(),
   )
 )
 
