@@ -21,8 +21,10 @@
 
 #pagebreak()
 
-= Security addendum
+= Operational PoC
 
-= Sobriety Addendum
+= Communication architecture diagram
 
-= Evidence plan for the presentation
+= Protocol note
+
+= Baseline security
