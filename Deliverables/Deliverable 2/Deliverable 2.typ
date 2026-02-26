@@ -1,4 +1,4 @@
-#import "style.typ" : deliverable
+#import "../style.typ" : deliverable
 
 #show: deliverable
 
