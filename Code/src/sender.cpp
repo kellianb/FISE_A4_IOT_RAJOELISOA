@@ -1,89 +1,80 @@
 #include <main.hpp>
-
-#if !IS_ENDPOINT
 #include <sender.hpp>
 #include <Arduino.h>
 #include <XBee.h>
-
-/*
-This example is for Series 2 XBee
- Sends a ZB TX request with the value of analogRead(pin5) and checks the status response for success
-*/
-
 // create the XBee object
 XBee xbee = XBee();
 
-uint8_t payload[] = { 0, 0 };
-
 // SH + SL Address of receiving XBee
-XBeeAddress64 addr64 = XBeeAddress64(0x00000000, 0x00000000);
-ZBTxRequest zbTx = ZBTxRequest(addr64, payload, sizeof(payload));
+XBeeAddress64 addr64 = XBeeAddress64(0, 0);
 ZBTxStatusResponse txStatus = ZBTxStatusResponse();
 
-int pin5 = 0;
 
 int statusLed = 13;
 int errorLed = 13;
 
-void flashLed(int pin, int times, int wait) {
+const int trigPinA = 8;  
+const int echoPinA = 9;
 
-  for (int i = 0; i < times; i++) {
-    digitalWrite(pin, HIGH);
-    delay(wait);
-    digitalWrite(pin, LOW);
+const int trigPinB = 6;  
+const int echoPinB = 5;
 
-    if (i + 1 < times) {
-      delay(wait);
-    }
-  }
+float readSensor(int trigPin, int echoPin) {
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  long duration = pulseIn(echoPin, HIGH, 30000);
+  float distance = duration * 0.0343 / 2.0;     
+
+  return distance;
 }
 
 void setupSender() {
   pinMode(statusLed, OUTPUT);
   pinMode(errorLed, OUTPUT);
-
+  pinMode(trigPinA, OUTPUT);  
+	pinMode(echoPinA, INPUT);  
+	pinMode(trigPinB, OUTPUT);  
+	pinMode(echoPinB, INPUT);
   Serial.begin(9600);
   Serial1.begin(9600);
-  xbee.begin(Serial1);
+  xbee.setSerial(Serial1);
 }
 
 void loopSender() {   
-  // break down 10-bit reading into two bytes and place in payload
-  pin5 = analogRead(5);
-  payload[0] = pin5 >> 8 & 0xff;
-  payload[1] = pin5 & 0xff;
+
+  float distA = readSensor(trigPinA, echoPinA);
+  float distB = readSensor(trigPinB, echoPinB);
+
+  uint16_t dA = (uint16_t)distA;
+  uint16_t dB = (uint16_t)distB;
+  
+  String message = String(dA) + "," + String(dB);
+
+  uint8_t payload[message.length()];
+  message.getBytes(payload, message.length() + 1);
+
+  ZBTxRequest zbTx = ZBTxRequest(addr64, payload, message.length());
+
+  Serial.println(message);
 
   xbee.send(zbTx);
 
-  // flash TX indicator
-  flashLed(statusLed, 1, 100);
-
-  // after sending a tx request, we expect a status response
-  // wait up to half second for the status response
   if (xbee.readPacket(500)) {
-    // got a response!
-
-    // should be a znet tx status            	
     if (xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE) {
       xbee.getResponse().getZBTxStatusResponse(txStatus);
 
-      // get the delivery status, the fifth byte
       if (txStatus.getDeliveryStatus() == SUCCESS) {
-        // success.  time to celebrate
-        flashLed(statusLed, 5, 50);
+        digitalWrite(statusLed, HIGH);
       } else {
-        // the remote XBee did not receive our packet. is it powered on?
-        flashLed(errorLed, 3, 500);
+        digitalWrite(errorLed, HIGH);
       }
     }
-  } else if (xbee.getResponse().isError()) {
-    //nss.print("Error reading packet.  Error code: ");  
-    //nss.println(xbee.getResponse().getErrorCode());
-  } else {
-    // local XBee did not provide a timely TX Status Response -- should not happen
-    flashLed(errorLed, 2, 50);
   }
 
   delay(1000);
 }
-#endif
