@@ -4,93 +4,48 @@
 #include <receiver.hpp>
 #include <Arduino.h>
 #include <XBee.h>
+#include <RTClib.h>
 
-/*
-This example is for Series 2 XBee
-Receives a ZB RX packet and sets a PWM value based on packet data.
-Error led is flashed if an unexpected packet is received
-*/
-
+RTC_DS3231 rtc;
 XBee xbee = XBee();
-XBeeResponse response = XBeeResponse();
-// create reusable response objects for responses we expect to handle 
-ZBRxResponse rx = ZBRxResponse();
-ModemStatusResponse msr = ModemStatusResponse();
 
-int statusLed = 13;
-int errorLed = 13;
-int dataLed = 13;
+void showDate(const char* txt, const DateTime& dt) {
+    Serial.print(txt);
+    Serial.print(' ');
+    Serial.print(dt.year(), DEC);
+    Serial.print('/');
+    Serial.print(dt.month(), DEC);
+    Serial.print('/');
+    Serial.print(dt.day(), DEC);
+    Serial.print(' ');
+    Serial.print(dt.hour(), DEC);
+    Serial.print(':');
+    Serial.print(dt.minute(), DEC);
+    Serial.print(':');
+    Serial.print(dt.second(), DEC);
 
-void flashLed(int pin, int times, int wait) {
-    
-    for (int i = 0; i < times; i++) {
-      digitalWrite(pin, HIGH);
-      delay(wait);
-      digitalWrite(pin, LOW);
-      
-      if (i + 1 < times) {
-        delay(wait);
-      }
-    }
+    Serial.print(" = ");
+    Serial.print(dt.unixtime());
+    Serial.print("s / ");
+    Serial.print(dt.unixtime() / 86400L);
+    Serial.print("d since 1970");
+
+    Serial.println();
 }
 
 void setupReceiver() {
-  pinMode(statusLed, OUTPUT);
-  pinMode(errorLed, OUTPUT);
-  pinMode(dataLed,  OUTPUT);
-  
-  // start serial
   Serial.begin(9600);
-  Serial1.begin(9600);
-  xbee.begin(Serial1);
-  
-  flashLed(statusLed, 3, 50);
+  xbee.setSerial(Serial);
+  if (! rtc.begin()) {
+    Serial.println("Couldn't find RTC");
+    while (1);
+  } 
+
+  // sets the RTC to the date & time on PC this sketch was compiled
+  rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
 }
 
-// continuously reads packets, looking for ZB Receive or Modem Status
 void loopReceiver() {
-    
-    xbee.readPacket();
-    
-    if (xbee.getResponse().isAvailable()) {
-      // got something
-      
-      if (xbee.getResponse().getApiId() == ZB_RX_RESPONSE) {
-        // got a zb rx packet
-        
-        // now fill our zb rx class
-        xbee.getResponse().getZBRxResponse(rx);
-            
-        if (rx.getOption() == ZB_PACKET_ACKNOWLEDGED) {
-            // the sender got an ACK
-            flashLed(statusLed, 10, 10);
-        } else {
-            // we got it (obviously) but sender didn't get an ACK
-            flashLed(errorLed, 2, 20);
-        }
-        // set dataLed PWM to value of the first byte in the data
-        analogWrite(dataLed, rx.getData(0));
-      } else if (xbee.getResponse().getApiId() == MODEM_STATUS_RESPONSE) {
-        xbee.getResponse().getModemStatusResponse(msr);
-        // the local XBee sends this response on certain events, like association/dissociation
-        
-        if (msr.getStatus() == ASSOCIATED) {
-          // yay this is great.  flash led
-          flashLed(statusLed, 10, 10);
-        } else if (msr.getStatus() == DISASSOCIATED) {
-          // this is awful.. flash led to show our discontent
-          flashLed(errorLed, 10, 10);
-        } else {
-          // another status
-          flashLed(statusLed, 5, 10);
-        }
-      } else {
-      	// not something we were expecting
-        flashLed(errorLed, 1, 25);    
-      }
-    } else if (xbee.getResponse().isError()) {
-      //nss.print("Error reading packet.  Error code: ");  
-      //nss.println(xbee.getResponse().getErrorCode());
-    }
+  DateTime now = rtc.now();
 }
 #endif
