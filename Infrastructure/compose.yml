@@ -1,0 +1,64 @@
+services:
+  mosquitto:
+    container_name: mosquitto
+    image: eclipse-mosquitto:2.1.2-alpine
+    ports:
+      - "127.0.0.1:1883:1883"
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:z
+      - iot-mosquitto-data:/mosquitto/data
+
+  influxdb:
+    container_name: influxdb
+    image: influxdb:3.8.3-core
+    ports:
+      - "127.0.0.1:8181:8181"
+    command:
+      - '--node-id=iot-influxdb'
+      - '--object-store=file'
+      - '--data-dir=/influxdb3/data'
+    volumes:
+      - ./influxdb/token.json:/influxdb3/token.json
+      - iot-influxdb-data:/influxdb3/data
+    environment:
+      - INFLUXDB3_ADMIN_TOKEN_FILE=/influxdb3/token.json
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL', 'curl -f http://localhost:8181/health -H "Authorization: Bearer ${INFLUXDB3_TOKEN}"' ]
+      interval: 2s
+      retries: 5
+
+  influxdb-init:
+    container_name: influxdb_init
+    image: influxdb:3.8.3-core
+    depends_on:
+      influxdb:
+        condition: service_healthy
+    entrypoint: 'influxdb3 create database main --token ${INFLUXDB3_TOKEN} --host http://influxdb:8181'
+
+  telegraf:
+    container_name: telegraf
+    image: telegraf:1.37.3-alpine
+    cap_add:
+      - cap_net_raw
+    depends_on:
+      - mosquitto
+      - influxdb
+    volumes:
+      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:z
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:12.3
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - ./grafana/influxdb.yml:/etc/grafana/provisioning/datasources/influxdb.yml:z
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+
+volumes:
+  iot-mosquitto-data:
+  iot-influxdb-data:

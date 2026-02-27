@@ -1,0 +1,18 @@
+apiVersion: 1
+
+datasources:
+  - name: influxdb
+    type: influxdb
+    uid: cfehti8ms55ogc
+    access: proxy
+    url: http://influxdb:8181
+    isDefault: true
+    editable: false
+
+    jsonData:
+      dbName: main
+      httpHeaderName1: Authorization
+      pdcInjected: false
+
+    secureJsonData:
+      httpHeaderValue1: Bearer apiv3_2AXnjp9Q8557cGsII_ar8e82PDACpNMg9QDwzKYWLmpDUkB6UaK-iyzXwyKIYD5VAeshVNxsP2Q7w_Urq6v8fw
