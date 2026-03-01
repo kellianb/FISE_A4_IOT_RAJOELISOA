@@ -25,6 +25,8 @@
 
 = Communication architecture diagram
 
+== Final architecture
+
 Before presenting the communication architecture, we remind the 2 constraints, linked to latency and energy consumption, that guided our design choices. These constraints directly influence how data is processed, where decisions are taken, and how the different layers of the system communicate.
 
 #set quote(block: true)
@@ -41,6 +43,8 @@ Before presenting the communication architecture, we remind the 2 constraints, l
 Our project uses an edge‑based architecture without cloud storage. This choice fits our needs because we do not require long‑term redundant storage or the advanced features offered by cloud or hybrid systems. Processing data locally also reduces latency, avoids dependency on external services, and removes recurring operational costs.
 
 For communication between the sensor units and the gateway, we selected Zigbee. This protocol is well adapted to a dense deployment of low‑power devices. Zigbee offers a good balance between energy consumption, bandwidth, and range. By configuring the sensor units as Zigbee end devices, we ensure long autonomy and reliable communication. The mesh capability allows us to extend coverage by adding routers if needed. Finally, Zigbee operates on a private network, which means there are no subscription or usage fees.
+
+== Data flow
 
 = Protocol note
 
