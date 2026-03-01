@@ -23,7 +23,7 @@
 
 = Operational PoC
 
-See attached video.
+See attached video: #link("https://viacesifr-my.sharepoint.com/:v:/g/personal/enorian_rajoelisoa_viacesi_fr/IQCwIY69Q52eQ4gt5tha5XavARnML9Ytczz7jyC6IxhwwN0?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=NxDawd")[PoC]
 
 = Communication architecture diagram
 
