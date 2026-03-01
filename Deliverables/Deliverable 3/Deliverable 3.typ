@@ -25,14 +25,22 @@
 
 = Communication architecture diagram
 
+Before presenting the communication architecture, we remind the 2 constraints, linked to latency and energy consumption, that guided our design choices. These constraints directly influence how data is processed, where decisions are taken, and how the different layers of the system communicate.
+
+#set quote(block: true)
+
+#quote[- *Latency/local criticality*: The system must provide occupancy updates with a maximum delay of 2 seconds to ensure near real-time information for students outside the coworking space. It must remain operational even in case of temporary network failure; therefore, data processing and decision-making are handled locally using an edge computing approach.
+- *Energy/autonomy*: Devices must operate autonomously for at least one working day, with a target autonomy of several weeks. To reduce energy consumption, devices operate only during opening hours (8:00 AM - 6:00 PM), use low-power communication protocols, and transmit data only when occupancy status changes.]
+
+
 #figure(
   image("Images/Architecture schematic.svg"),
   caption: "Communication architecture diagram"
 )
 
-Our project adopts an edge architecture that does not rely on cloud storage. This choice is driven by the fact that we do not require redundant long term data storage or the performance and additional features provided by cloud or hybrid architectures. Moreover, avoiding cloud services helps reduce ongoing operational costs and minimizes latency.
+Our project uses an edge‑based architecture without cloud storage. This choice fits our needs because we do not require long‑term redundant storage or the advanced features offered by cloud or hybrid systems. Processing data locally also reduces latency, avoids dependency on external services, and removes recurring operational costs.
 
-The decision to use Zigbee for communication between the sensor units and the gateway is based on several factors. Given the dense deployment of sensor units and their energy constraints, Zigbee offers an energy-efficient communication solution with a favorable balance of bandwidth and range. By configuring the sensor units as Zigbee end devices, we ensure strong autonomy and sufficient bandwidth. Additionally, since Zigbee operates on a mesh network, we can extend the coverage by adding routers. Finally, Zigbee’s private network ensures there are no recurring costs associated with its use.
+For communication between the sensor units and the gateway, we selected Zigbee. This protocol is well adapted to a dense deployment of low‑power devices. Zigbee offers a good balance between energy consumption, bandwidth, and range. By configuring the sensor units as Zigbee end devices, we ensure long autonomy and reliable communication. The mesh capability allows us to extend coverage by adding routers if needed. Finally, Zigbee operates on a private network, which means there are no subscription or usage fees.
 
 = Protocol note
 
@@ -97,13 +105,13 @@ sites/{site_id}/rooms/{room_id}/endpoints/{endpoint_id}/telemetry
 
 === Analysis for Our Project <sec:mqtt_qos_analysis>
 
-- Our system sends messages when students enter or leave the co-working space
+#quote[- Our system sends messages when students enter or leave the co-working space
 - Messages represent a change to the number of students in the co-working space (delta temporality #footnote[
   Metrics in the *delta temporality* report changes over time by comparing two points in a dataset or system, helping to identify trends or shifts. On the other hand, cumulative metrics track the total value over a set period, adding up all values from the start of that period until now (e.g., "total sales since the beginning of the year").
 ])
 - Lost messages will therefore affect the correctness of our count
 - Duplicate messages can also affect the correctnes of our count, but this can be mitigated by applying deduplication on the edge
-- Devices operate under energy and budget constraints.
+- Devices operate under energy and budget constraints.]
 
 *QoS 0* is therefore too unreliable for our system, since a lost message would throw off our count of students in the co-working space for the rest of the day. However, it could be suitable for collecting telemetry from our system.
 
@@ -217,7 +225,7 @@ We now compare our selected security measures against the STRIDE threat model. T
 
 STRIDE is a structured threat‑modelling framework originally developed by Microsoft to help identify and classify security threats in distributed systems. It decomposes potential attacks into six categories:
 
--  S (Spoofing): impersonation of identities or devices
+#quote[-  S (Spoofing): impersonation of identities or devices
 
 -  T (Tampering): modification of data or messages
 
@@ -227,7 +235,7 @@ STRIDE is a structured threat‑modelling framework originally developed by Micr
 
 -  D (Denial of Service): disruption or exhaustion of system resources
 
--  E (Elevation of Privilege): gaining higher rights than intended
+-  E (Elevation of Privilege): gaining higher rights than intended]
 
 We use the STRIDE model because it is a common and well‑known method for identifying security threats in connected systems. It is also used in the recent European cybersecurity standard EN 18031, which shows that STRIDE is considered reliable and suitable for modern IoT evaluations. STRIDE helps us cover all the main types of threats in a simple and structured way, which makes it easier to check if our security measures answer each risk.
 
