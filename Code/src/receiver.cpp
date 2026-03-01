@@ -1,6 +1,5 @@
 #include <main.hpp>
 
-#if IS_ENDPOINT
 #include <receiver.hpp>
 #include <Arduino.h>
 #include <XBee.h>
@@ -96,4 +95,3 @@ void loopReceiver() {
     Serial.println(xbee.getResponse().getErrorCode());
   }
 }
-#endif
