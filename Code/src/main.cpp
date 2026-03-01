@@ -1,23 +1,21 @@
 #include <main.hpp>
-#include <Arduino.h>
 
 #if IS_ENDPOINT
-  #include <receiver.hpp>
+  #include <endpoint/endpoint.hpp>
 #else
-  #include <sender.hpp>
+  #include <coordinator/coordinator.hpp>
 #endif
 
 void setup() {
-
   #if IS_XCTU_PROGRAM
     setupXTCU();
     return;
   #endif
 
   #if IS_ENDPOINT
-    setupReceiver();
+    setupEndpoint();
   #else
-    setupSender();
+    setupCoordinator();
   #endif
 }
 
@@ -28,12 +26,13 @@ void loop() {
   #endif
 
   #if IS_ENDPOINT
-    loopReceiver();
+    loopEndpoint();
   #else
-    loopSender();
+    loopCoordinator();
   #endif
 }
 
+/* === XCTU Methods === */
 void setupXTCU() {
   Serial.begin(9600);
   Serial1.begin(9600);
@@ -47,3 +46,4 @@ void loopXTCU() {
     Serial.write(Serial1.read());
   }
 }
+/* ==================== */
