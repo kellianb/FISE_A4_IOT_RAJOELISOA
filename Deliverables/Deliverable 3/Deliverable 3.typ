@@ -25,6 +25,11 @@
 
 = Communication architecture diagram
 
+#figure(
+  image("Images/Architecture schematic.svg"),
+  caption: "Communication architecture diagram"
+)
+
 = Protocol note
 
 We decided to use MQTT because for you project, since our Arduino gateway has sufficient computational resources to handle the protocol and because we can benefit from the additional features it offers. Additionally, MQTT provides additional flexibility, and a cleaner separation between publishing and subscribing services.
@@ -34,13 +39,13 @@ In this section we will detail and justify the technical choices we made when im
 
 == MQTT topics
 
-Our system will use dedicated MQTT topics for each deployed sensor unit. Topics will be structured hierarchically by site ID, room, sensor ID and information type.
+Our system uses dedicated MQTT topics for each deployed sensor unit. Topics are structured hierarchically by site ID, room ID, sensor ID and information type.
 
-This structure will allow subscribing services to filter the events they listen to by site, room, specific sensors and information type.
+This structure allows subscribing services to filter the events they listen to by site, room, specific sensors and information type.
 
 === Measures <sec:mqtt_topics_measures>
 
-Sensor measurement data will be published using the following topic structure:
+Sensor measurement data is published using the following topic structure:
 
 #align(center)[
 ```
@@ -50,7 +55,7 @@ sites/{site_id}/room/{room_id}/sensors/{sensor_id}/measures
 
 === Telemetry <sec:mqtt_topics_telemetry>
 
-If sensors emit operational telemetry (e.g., status, diagnostics, battery level), it will be published under a separate topic:
+If sensors emit operational telemetry (e.g., status, diagnostics, battery level), it is published under a separate topic:
 
 #align(center)[
 ```
@@ -82,16 +87,16 @@ sites/{site_id}/room/{room_id}/sensors/{sensor_id}/telemetry
     [*Latency*], "Lowest", "Moderate", "Highest",
 
     [*Energy Consumption*],	"Lowest",	"Moderate",	"Highest",
-
-    [*Implementation Complexity*], "Simple", "Moderate", "Complex",
   ),
   caption: [MQTT QoS level comparison]
 )
 
 === Analysis for Our Project <sec:mqtt_qos_analysis>
 
-- Our system sends payloads when students enter or leave the co-working space
-- Messages represent a change to the number of students in the co-working space
+- Our system sends messages when students enter or leave the co-working space
+- Messages represent a change to the number of students in the co-working space (delta temporality #footnote[
+  The delta metric refers to the change or difference in a value over a specific time period, typically comparing two distinct points in time (e.g., "this week vs. last week"). In contrast, the cumulative metric tracks the ongoing total or sum over a defined period, continuously accumulating values from the start up until the present moment (e.g., "total sales since the beginning of the year").
+])
 - Lost messages will therefore affect the correctness of our count
 - Duplicate messages can also affect the correctnes of our count, but this can be mitigated by applying deduplication on the edge
 - Devices operate under energy and budget constraints.
@@ -104,9 +109,9 @@ sites/{site_id}/room/{room_id}/sensors/{sensor_id}/telemetry
 
 === Final decision
 
-Our system will use *QoS 1* for measures (@sec:mqtt_topics_measures), because this level has the smallest possible overhead while still providing sufficient delivery guarantees for our system to ensure correct tracking of occupancy.
+Our system uses *QoS 1* for measures, because this level has the smallest possible overhead while still providing sufficient delivery guarantees for our system to ensure correct tracking of occupancy.
 
-*QoS 0* could however be suitable for our telemetry (@sec:mqtt_topics_telemetry), if we deem its consistent delivery non-critical.
+*QoS 0* could however be suitable for our telemetry, if we deem its consistent delivery non-critical.
 
 == MQTT sessions
 
@@ -157,8 +162,25 @@ As mentioned in @sec:mqtt_qos_analysis, messages emitted by our system represent
 
 *Persistent session* is suitable for our use-case, since it guarantees that every message is relayed to our occupancy tracking system, even in case of temporary disconnections, ensuring our count remains accurate.
 
+
+=== Final decision <sec:mqtt_session_final_decision>
+
+Our system uses *persistent sessions* to ensure that services listening to occupancy updates do not miss any messages.
+
+*Clean sessions* might, however, be appropriate for services listening to sensor telemetry, such as reporting current battery level.
+
+== MQTT retain
+
+The retain flag is used to ensure that the broker keeps the last message sent on an MQTT topic, even after it has been delivered. When a message is published with the retain flag set to true, the broker stores it and automatically sends it to any new client that subscribes to that topic.
+
+=== Analysis for Our Project
+
+Since the metrics transmitted by our system are in the delta temporality (see @sec:mqtt_qos_analysis), individual measurements do not offer meaningful insights. Additionally, clients subscribing to metrics will use persistent sessions (@sec:mqtt_session_final_decision), which means the broker will already store any missed messages. As a result, new subscriptions are expected to be infrequent.
+
 === Final decision
 
-Our system will use persistent sessions to ensure our occupancy tracking system receives every message, even if it is intermittently offline.
+Our system will not enable the retain flag for metrics, as it is made redundant by our usage of persistent storage.
+
+The setting might however be useful for telemetry which is in the cumulative temporality and where only the last message is relevant (e.g. battery percentage).
 
 = Baseline security
