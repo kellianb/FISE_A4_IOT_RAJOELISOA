@@ -2,8 +2,9 @@
 #include <sender.hpp>
 #include <Arduino.h>
 #include <XBee.h>
+
 // create the XBee object
-XBee xbee = XBee();
+XBee xbeeCoordinator = XBee();
 
 // SH + SL Address of receiving XBee
 XBeeAddress64 addr64 = XBeeAddress64(0, 0);
@@ -42,18 +43,15 @@ void setupSender() {
 	pinMode(echoPinB, INPUT);
   Serial.begin(9600);
   Serial1.begin(9600);
-  xbee.setSerial(Serial1);
+  xbeeCoordinator.setSerial(Serial1);
 }
 
 void loopSender() {   
 
   float distA = readSensor(trigPinA, echoPinA);
   float distB = readSensor(trigPinB, echoPinB);
-
-  uint16_t dA = (uint16_t)distA;
-  uint16_t dB = (uint16_t)distB;
   
-  String message = String(dA) + "," + String(dB);
+  String message = String(distA) + "," + String(distB);
 
   uint8_t payload[message.length()];
   message.getBytes(payload, message.length() + 1);
@@ -62,11 +60,11 @@ void loopSender() {
 
   Serial.println(message);
 
-  xbee.send(zbTx);
+  xbeeCoordinator.send(zbTx);
 
-  if (xbee.readPacket(500)) {
-    if (xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE) {
-      xbee.getResponse().getZBTxStatusResponse(txStatus);
+  if (xbeeCoordinator.readPacket(500)) {
+    if (xbeeCoordinator.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE) {
+      xbeeCoordinator.getResponse().getZBTxStatusResponse(txStatus);
 
       if (txStatus.getDeliveryStatus() == SUCCESS) {
         digitalWrite(statusLed, HIGH);
