@@ -30,6 +30,8 @@
   caption: "Communication architecture diagram"
 )
 
+Our project uses an edge architecture, without any cloud storage. This decision is mainly motivated by the fact that we do not require the performance or additional features a cloud or hybrid architecture would bring. Additionally, not relying on cloud services lowers the ongoing costs of our project and reduces latency.
+
 = Protocol note
 
 We decided to use MQTT because for you project, since our Arduino gateway has sufficient computational resources to handle the protocol and because we can benefit from the additional features it offers. Additionally, MQTT provides additional flexibility, and a cleaner separation between publishing and subscribing services.
@@ -39,27 +41,27 @@ In this section we will detail and justify the technical choices we made when im
 
 == MQTT topics
 
-Our system uses dedicated MQTT topics for each deployed sensor unit. Topics are structured hierarchically by site ID, room ID, sensor ID and information type.
+Our system uses dedicated MQTT topics for each deployed sensor unit (or endpoint). Topics are structured hierarchically by site ID, room ID, endpoint ID and information type.
 
-This structure allows subscribing services to filter the events they listen to by site, room, specific sensors and information type.
+This structure allows subscribing services to filter the events they listen to by site, room, specific endpoints and information type.
 
 === Measures <sec:mqtt_topics_measures>
 
-Sensor measurement data is published using the following topic structure:
+Measurement data reported by endpoints is published using the following topic structure:
 
 #align(center)[
 ```
-sites/{site_id}/room/{room_id}/sensors/{sensor_id}/measures
+sites/{site_id}/rooms/{room_id}/endpoints/{endpoint_id}/measures
 ```
 ]
 
 === Telemetry <sec:mqtt_topics_telemetry>
 
-If sensors emit operational telemetry (e.g., status, diagnostics, battery level), it is published under a separate topic:
+If endpoints emit operational telemetry (e.g., status, diagnostics, battery level), it is published under a separate topic:
 
 #align(center)[
 ```
-sites/{site_id}/room/{room_id}/sensors/{sensor_id}/telemetry
+sites/{site_id}/rooms/{room_id}/endpoints/{endpoint_id}/telemetry
 ```
 ]
 
@@ -95,7 +97,7 @@ sites/{site_id}/room/{room_id}/sensors/{sensor_id}/telemetry
 
 - Our system sends messages when students enter or leave the co-working space
 - Messages represent a change to the number of students in the co-working space (delta temporality #footnote[
-  The delta metric refers to the change or difference in a value over a specific time period, typically comparing two distinct points in time (e.g., "this week vs. last week"). In contrast, the cumulative metric tracks the ongoing total or sum over a defined period, continuously accumulating values from the start up until the present moment (e.g., "total sales since the beginning of the year").
+  Metrics in the *delta temporality* report changes over time by comparing two points in a dataset or system, helping to identify trends or shifts. On the other hand, cumulative metrics track the total value over a set period, adding up all values from the start of that period until now (e.g., "total sales since the beginning of the year").
 ])
 - Lost messages will therefore affect the correctness of our count
 - Duplicate messages can also affect the correctnes of our count, but this can be mitigated by applying deduplication on the edge
@@ -103,7 +105,7 @@ sites/{site_id}/room/{room_id}/sensors/{sensor_id}/telemetry
 
 *QoS 0* is therefore too unreliable for our system, since a lost message would throw off our count of students in the co-working space for the rest of the day. However, it could be suitable for collecting telemetry from our system.
 
-*QoS 1* is potentially suitable for our system. While duplicate messages could throw off our count as well, this can be mitigated by having our gateway or sensors generate and attach a unique ID to each message. Message can then be deduplicated on the edge by looking for duplicate IDs.
+*QoS 1* is potentially suitable for our system. While duplicate messages could throw off our count as well, this can be mitigated by having our gateway or endpoints generate and attach a unique ID to each message. Message can then be deduplicated on the edge by looking for duplicate IDs.
 
 *QoS 2* provides the highest level of reliability and would simplify the implementation of the backend on our edge compute, since we would not have to deal with duplicate messages. However it also introduces additional overhead and energy consumption.
 
@@ -156,7 +158,7 @@ Our system uses *QoS 1* for measures, because this level has the smallest possib
 
 === Analysis for Our Project
 
-As mentioned in @sec:mqtt_qos_analysis, messages emitted by our system represent updates to the number of students in the co-working space. Missing a message would therefore lead to an incorrect count, it is therefore vital that our occupancy tracking system receives every message emitted by our sensors.
+As mentioned in @sec:mqtt_qos_analysis, messages emitted by our system represent updates to the number of students in the co-working space. Missing a message would therefore lead to an incorrect count, it is therefore vital that our occupancy tracking system receives every message emitted by our endpoints.
 
 *Clean session* is therefore too unreliable, since a temporary disconnection of our occupancy tracking system could mean missed messages, leading to an incorrect count.
 
@@ -167,7 +169,7 @@ As mentioned in @sec:mqtt_qos_analysis, messages emitted by our system represent
 
 Our system uses *persistent sessions* to ensure that services listening to occupancy updates do not miss any messages.
 
-*Clean sessions* might, however, be appropriate for services listening to sensor telemetry, such as reporting current battery level.
+*Clean sessions* might, however, be appropriate for services listening to endpoint telemetry, such as reporting current battery level.
 
 == MQTT retain
 
