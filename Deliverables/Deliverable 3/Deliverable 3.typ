@@ -30,7 +30,9 @@
   caption: "Communication architecture diagram"
 )
 
-Our project uses an edge architecture, without any cloud storage. This decision is mainly motivated by the fact that we do not require the performance or additional features a cloud or hybrid architecture would bring. Additionally, not relying on cloud services lowers the ongoing costs of our project and reduces latency.
+Our project adopts an edge architecture that does not rely on cloud storage. This choice is driven by the fact that we do not require redundant long term data storage or the performance and additional features provided by cloud or hybrid architectures. Moreover, avoiding cloud services helps reduce ongoing operational costs and minimizes latency.
+
+The decision to use Zigbee for communication between the sensor units and the gateway is based on several factors. Given the dense deployment of sensor units and their energy constraints, Zigbee offers an energy-efficient communication solution with a favorable balance of bandwidth and range. By configuring the sensor units as Zigbee end devices, we ensure strong autonomy and sufficient bandwidth. Additionally, since Zigbee operates on a mesh network, we can extend the coverage by adding routers. Finally, Zigbee’s private network ensures there are no recurring costs associated with its use.
 
 = Protocol note
 
