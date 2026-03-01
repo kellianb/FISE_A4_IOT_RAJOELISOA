@@ -27,12 +27,12 @@ See attached video.
 
 = Communication architecture diagram
 
-== Final architecture
-
 Before presenting the communication architecture, we remind the 2 constraints, linked to latency and energy consumption, that guided our design choices. These constraints directly influence how data is processed, where decisions are taken, and how the different layers of the system communicate.
 
+#quote(block: true)[
 - *Latency/local criticality*: The system must provide occupancy updates with a maximum delay of 2 seconds to ensure near real-time information for students outside the coworking space. It must remain operational even in case of temporary network failure; therefore, data processing and decision-making are handled locally using an edge computing approach.
 - *Energy/autonomy*: Devices must operate autonomously for at least six month, with a target autonomy of a year. To reduce energy consumption, devices operate only during opening hours (8:00 AM - 6:00 PM), use low-power communication protocols, and transmit data only when occupancy status changes.
+]
 
 
 #figure(
@@ -44,7 +44,6 @@ Our project uses an edge‑based architecture without cloud storage. This choice
 
 For communication between the sensor units and the gateway, we selected Zigbee. This protocol is well adapted to a dense deployment of low‑power devices. Zigbee offers a good balance between energy consumption, bandwidth, and range. By configuring the sensor units as Zigbee end devices, we ensure long autonomy and reliable communication. The mesh capability allows us to extend coverage by adding routers if needed. Finally, Zigbee operates on a private network, which means there are no subscription or usage fees.
 
-== Data flow
 
 = Protocol note
 
@@ -116,6 +115,7 @@ Metrics in the *delta temporality* report changes over time by comparing two poi
 - Lost messages will therefore affect the correctness of our count
 - Duplicate messages can also affect the correctness of our count, but this can be mitigated by applying deduplication on the edge
 - Devices operate under energy and budget constraints.
+
 
 *QoS 0* is therefore too unreliable for our system, since a lost message would throw off our count of students in the co-working space for the rest of the day. However, it could be suitable for collecting telemetry from our system.
 
