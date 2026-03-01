@@ -32,7 +32,7 @@ Before presenting the communication architecture, we remind the 2 constraints, l
 #set quote(block: true)
 
 #quote[- *Latency/local criticality*: The system must provide occupancy updates with a maximum delay of 2 seconds to ensure near real-time information for students outside the coworking space. It must remain operational even in case of temporary network failure; therefore, data processing and decision-making are handled locally using an edge computing approach.
-- *Energy/autonomy*: Devices must operate autonomously for at least one working day, with a target autonomy of several weeks. To reduce energy consumption, devices operate only during opening hours (8:00 AM - 6:00 PM), use low-power communication protocols, and transmit data only when occupancy status changes.]
+- *Energy/autonomy*: Devices must operate autonomously for at least six month, with a target autonomy of a year. To reduce energy consumption, devices operate only during opening hours (8:00 AM - 6:00 PM), use low-power communication protocols, and transmit data only when occupancy status changes.]
 
 
 #figure(
