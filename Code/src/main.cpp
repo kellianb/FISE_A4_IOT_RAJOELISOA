@@ -10,8 +10,7 @@
 void setup() {
 
   #if IS_XCTU_PROGRAM
-    Serial.begin(9600);      // USB serial to PC
-    Serial1.begin(9600);     // D0/D1 to XBee
+    setupXTCU();
     return;
   #endif
 
@@ -23,14 +22,8 @@ void setup() {
 }
 
 void loop() {
-
   #if IS_XCTU_PROGRAM
-    if (Serial.available()) {
-    Serial1.write(Serial.read());
-    }
-    if (Serial1.available()) {
-      Serial.write(Serial1.read());
-    }
+    loopXTCU();
     return;
   #endif
 
@@ -39,4 +32,18 @@ void loop() {
   #else
     loopSender();
   #endif
+}
+
+void setupXTCU() {
+  Serial.begin(9600);
+  Serial1.begin(9600);
+}
+
+void loopXTCU() {
+  if (Serial.available()) {
+    Serial1.write(Serial.read());
+  }
+  if (Serial1.available()) {
+    Serial.write(Serial1.read());
+  }
 }
