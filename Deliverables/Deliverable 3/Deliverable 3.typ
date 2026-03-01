@@ -188,3 +188,92 @@ Our system will not enable the retain flag for metrics, as it is made redundant 
 The setting might however be useful for telemetry which is in the cumulative temporality and where only the last message is relevant (e.g. battery percentage).
 
 = Baseline security
+
+== Security requirements <sec:requirements>
+
+
+As presented in the previous deliverable (Deliverable 2, Section 4 "Minimum safety trace"), ETSI EN 303 645 provide several security guidelines. From this international standard and due to the limited time we can spend for this project, we choosed to implement 6 secutity baseline.
+
+#figure(
+  table(
+    columns: (auto, auto, auto),
+    table.header(
+      [*Provision of ETSI EN 303 645 v3.1.3 (2024/09)*],
+      [*Secutiry baseline implemented*],
+      [*Security actions*]),
+    "5.1 No universal default passwords", " ZigBee and MQTT technologies require passwords for authentication. They will use separate passwords created by a secure password generator.","SA1",
+    "5.2 Implement a means to manage reports of vulnerabilities", "We will maintain an internal database of internal vulnerabilities, their severity and the status of their mitigation.","SA2",
+    "5.5 Communicate securely", "As defined in our minimum-security requirements, we implement TLS (Arduino) encryption and AES-128 (ZigBee).","SA3",
+    "5.6 Minimize exposed attack surfaces", "We choose ZigBee over BLE to reduce the attack surface. Separate sub-networks will be used for segmentation. Our systems don’t have any physical protection, however we can disable physical port on the Arduino's.","SA4",
+    "5.9 Make systems resilient to outages", "We will have a buffer that stores the data locally if we face network issues (as Wi-Fi not reachable).","SA5",
+    "5.10 Examine system telemetry data", "We gather additional information such as: device health data (sensor state), network data (timeouts) and security data (fail check authentication).","SA6",
+  ),
+  caption: "Security measures implemented in compliance with ETSI EN 303 645"
+)
+
+== Attack scenario <sec:attack>
+
+We now compare our selected security measures against the STRIDE threat model. The following table maps each STRIDE category to the implemented baseline security actions (SA1-SA6) and explains how they mitigate the corresponding threats.
+
+STRIDE is a structured threat‑modelling framework originally developed by Microsoft to help identify and classify security threats in distributed systems. It decomposes potential attacks into six categories:
+
+-  S (Spoofing): impersonation of identities or devices
+
+-  T (Tampering): modification of data or messages
+
+-  R (Repudiation): denial of actions without reliable logging
+
+-  I (Information Disclosure): unauthorized access to confidential data
+
+-  D (Denial of Service): disruption or exhaustion of system resources
+
+-  E (Elevation of Privilege): gaining higher rights than intended
+
+We use the STRIDE model because it is a common and well‑known method for identifying security threats in connected systems. It is also used in the recent European cybersecurity standard EN 18031, which shows that STRIDE is considered reliable and suitable for modern IoT evaluations. STRIDE helps us cover all the main types of threats in a simple and structured way, which makes it easier to check if our security measures answer each risk.
+
+#figure(
+  table(
+    columns: (auto, auto, auto, auto),
+    table.header(
+      [*STRIDE Category*],
+      [*Threat Description*],
+      [*Security Actions (SA)*],
+      [*Justification*]
+    ),
+
+    "Spoofing (S)",
+    "An attacker impersonates a ZigBee node, a sensor, or an MQTT client.",
+    "SA1, SA3",
+    "- Unique passwords;
+- TLS and AES-128 encryption.",
+    "Tampering (T)",
+    "Modification of data in transit or alteration of ZigBee/MQTT messages.",
+    "SA3, SA4",
+    "- Encrypted communication;
+- Network segmentation.",
+    "Repudiation (R)",
+    "A malicious actor denies having sent a command or message.",
+    "SA6, SA2",
+    "- Telemetry logs;
+- Vulnerability tracking.",
+    "Information Disclosure (I)",
+    "Interception of sensitive data such as sensor states or MQTT messages.",
+    "SA3, SA4",
+    "- Encrypted communication;
+- Segmented network.",
+    "Denial of Service (D)",
+    "Network saturation or unavailability of Wi-Fi/ZigBee.",
+    "SA5, SA4",
+    "- Local buffering;
+- Reduced exposed interfaces.",
+    "Elevation of Privilege (E)",
+    "An attacker gains higher privileges.",
+    "SA1, SA4, SA2",
+    "- Unique passwords;
+- Disabled physical ports;
+- Vulnerability tracking."
+  ),
+  caption: "STRIDE analysis"
+)
+
+In conclusion, the six security measures we selected from ETSI EN 303 645 form a coherent and balanced baseline for our system. The STRIDE analysis shows that each major threat category is covered by at least one of our actions.
